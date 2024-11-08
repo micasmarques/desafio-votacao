@@ -1,10 +1,13 @@
 package com.logoscti.micael.assembleia.controllers;
 
+import com.logoscti.micael.assembleia.dtos.ResultadoVotacaoDTO;
 import com.logoscti.micael.assembleia.dtos.SessaoDTO;
 import com.logoscti.micael.assembleia.dtos.SessaoResponseDTO;
 import com.logoscti.micael.assembleia.services.SessaoService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +29,11 @@ public class SessaoController {
     @ResponseStatus(HttpStatus.CREATED)
     public SessaoResponseDTO abrirSessao(@RequestBody SessaoDTO sessaoDto) {
         return new SessaoResponseDTO(sessaoService.abrirSessao(sessaoDto));
+    }
+
+    @GetMapping("/resultado/{sessaoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResultadoVotacaoDTO getResultado(@PathVariable Long sessaoId) {
+        return sessaoService.getResultado(sessaoId);
     }
 }
