@@ -1,6 +1,5 @@
 package com.logoscti.micael.assembleia.controllers;
 
-import com.logoscti.micael.assembleia.dtos.VotoDTO;
 import com.logoscti.micael.assembleia.services.VotoService;
 
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,7 @@ public class VotoController {
 
     @PostMapping("/{sessaoId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public VotoDTO registrarVoto(@PathVariable Long sessaoId, @RequestParam String associadoId, @RequestParam Boolean voto) {
-        return new VotoDTO(votoService.registrarVoto(sessaoId, associadoId, voto));
+    public void registrarVoto(@PathVariable Long sessaoId, @RequestParam String associadoId, @RequestParam Boolean voto) {
+        votoService.registrarVoto(sessaoId, associadoId, voto);
     }
 }

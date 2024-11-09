@@ -1,5 +1,6 @@
 package com.logoscti.micael.assembleia.services;
 
+import com.logoscti.micael.assembleia.batch.VotoProducer;
 import com.logoscti.micael.assembleia.model.Sessao;
 import com.logoscti.micael.assembleia.model.Voto;
 import com.logoscti.micael.assembleia.repositories.SessaoRepository;
@@ -18,8 +19,10 @@ public class VotoService {
 
     private VotoRepository votoRepository;
     private SessaoRepository sessaoRepository;
+    private VotoProducer votoProducer;
 
-    public Voto registrarVoto(Long sessaoId, String associadoId, Boolean voto) {
+
+    public void registrarVoto(Long sessaoId, String associadoId, Boolean voto) {
         Sessao sessao = sessaoRepository.findById(sessaoId)
                 .orElseThrow(() -> new IllegalArgumentException("Sessão não encontrada"));
 
@@ -28,6 +31,6 @@ public class VotoService {
         novoVoto.setVoto(voto);
         novoVoto.setSessao(sessao);
 
-        return votoRepository.save(novoVoto);
+        votoProducer.enviarVotoParaFila(novoVoto);
     }
 }

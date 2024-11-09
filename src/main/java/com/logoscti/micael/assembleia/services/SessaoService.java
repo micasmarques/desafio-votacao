@@ -2,6 +2,7 @@ package com.logoscti.micael.assembleia.services;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.logoscti.micael.assembleia.dtos.ResultadoVotacaoDTO;
@@ -12,6 +13,7 @@ import com.logoscti.micael.assembleia.model.Voto;
 import com.logoscti.micael.assembleia.repositories.PautaRepository;
 import com.logoscti.micael.assembleia.repositories.SessaoRepository;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -45,5 +47,11 @@ public class SessaoService {
         long votosNao = votosContados.getOrDefault(false, 0L);
 
         return new ResultadoVotacaoDTO(sessaoId, votosSim, votosNao);
+    }
+
+    @Cacheable(value = "sessoesAtivas", key = "#sessaoId")
+    public Optional<Sessao> getSessaoAtiva(Long sessaoId) {
+        return sessaoRepository.findById(sessaoId)
+                .filter(sessao -> sessao.isAtiva());
     }
 }
