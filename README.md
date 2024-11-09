@@ -115,3 +115,91 @@ A tela do tipo SELECAO exibe uma lista de opções para que o usuário.
 O aplicativo envia uma requisição POST para a url informada e com o body definido pelo objeto dentro de cada item da lista de seleção, quando o mesmo é acionado, semelhando ao funcionamento dos botões da tela FORMULARIO.
 
 # desafio-votacao
+
+### Passo 1: Pré-requisitos
+
+Certifique-se de que sua máquina tenha:
+
+- **Docker** e **Docker Compose** instalados para executar o ambiente de containers.
+- **Java** e **Maven** instalados para rodar a aplicação Spring Boot (caso queira rodar fora do Docker).
+
+### Passo 2: Subir os Containers com Docker Compose
+
+1. **Abra um terminal** e navegue até o diretório onde o arquivo `docker-compose.yml` está localizado.
+2. Execute o comando a seguir para construir e iniciar os containers:
+   ```bash
+   docker-compose up -d
+   ```
+   Esse comando irá:
+
+- Subir o container do banco de dados **PostgreSQL** na porta `5432`.
+- Subir o container do **Redis** na porta `6379`.
+- Subir o container do **RabbitMQ** na porta `5672` (porta de comunicação) e `15672` (interface de gerenciamento).
+
+3. Verifique se os containers estão rodando corretamente:
+   ```bash
+   docker-compose ps
+   ```
+   Você deverá ver algo assim:
+   ```
+   Name                    Command               State           Ports
+   ---------------------------------------------------------------------------
+   database                docker-entrypoint.sh   Up      0.0.0.0:5432->5432/tcp
+   redis                   docker-entrypoint.sh   Up      0.0.0.0:6379->6379/tcp
+   rabbitmq                docker-entrypoint.sh   Up      0.0.0.0:5672->5672/tcp, 0.0.0.0:15672->15672/tcp
+   ```
+
+### Passo 3: Conectar-se ao Banco de Dados PostgreSQL
+
+1. **Ferramenta de Conexão**: Para se conectar ao PostgreSQL e visualizar os dados, você pode usar uma ferramenta como *
+   *DBeaver**, **pgAdmin**, ou a linha de comando do `psql`.
+2. **Detalhes de Conexão**:
+
+- **Host**: `localhost`
+- **Porta**: `5432`
+- **Usuário**: `user` (conforme especificado no `docker-compose.yml`)
+- **Senha**: `pwd`
+- **Banco de Dados**: `votacao_db`
+
+3. **Conectando via Linha de Comando (Opcional)**:
+   Caso tenha o `psql` instalado, você pode se conectar ao banco de dados PostgreSQL usando o comando:
+   ```bash
+   psql -h localhost -p 5432 -U user -d votacao_db
+   ```
+   Em seguida, insira a senha `pwd` quando solicitado.
+
+### Passo 4: Acessar o Redis
+
+Para acessar e monitorar o Redis:
+
+- Use uma ferramenta de cliente Redis, como **RedisInsight** ou a linha de comando do `redis-cli`.
+  Com o `redis-cli`, você pode executar:
+  ```bash
+  docker exec -it desafio-votacao-redis-1 redis-cli
+  ```
+
+### Passo 5: Acessar o RabbitMQ
+
+Para acessar o painel de gerenciamento do RabbitMQ:
+
+1. Abra um navegador e vá para:
+   ```
+   http://localhost:15672
+   ```
+2. **Credenciais de Login**:
+
+- **Usuário**: `guest`
+- **Senha**: `guest`
+  No painel de gerenciamento, você pode visualizar e monitorar filas, trocas e outras operações de mensagens.
+
+### Passo 6: Rodar a Aplicação Spring Boot
+
+Se você deseja rodar a aplicação localmente:
+
+1. Abra um terminal e navegue até o diretório do projeto.
+2. Execute o comando:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+A aplicação será iniciada e estará disponível em `http://localhost:8080`.
